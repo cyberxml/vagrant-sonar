@@ -1,27 +1,72 @@
-    1  netstat -plntu
-    2  systemctl enable sonar
-    3  yum install epel
-    4  yum install epel-release
-    5  yum install ansible
-    6  yum install git
-    7  cd /opt
-    8  mkdir gits
-    9  cd gits
-   10  git clone https://github.com/cyberxml/vagrant-sonar
-   11  cd vagrant-sonar/
+    1  cd /opt/gits
+    2  mkdir /opt/gits
+    3  yum -y install gits
+    4  cd /opt/gits/
+    5  ls
+    6  git clone https://github.com/cyberxml/vagrant-sonar
+    7  yum -y install git
+    8  git clone https://github.com/cyberxml/vagrant-sonar
+    9  cd vagrant-sonar/
+   10  ls
+   11  cd vagrant/
    12  ls
-   13  cd vagrant/
+   13  cd conf/
    14  ls
-   15  cd conf/
+   15  cd sonar/
    16  ls
-   17  cd sonar/
-   18  ls
-   19  ansible-galaxy -r requirements.yml 
-   20  ansible-galaxy import requirements.yml 
-   21  ansible-galaxy install requirements.yml 
-   22  ansible-galaxy install -r requirements.yml 
-   23  ansible-playbook sonar.yml 
-   24  vi sonar.yml 
-   25  ansible-playbook sonar.yml 
-   26  netstat -plntu
-   27  history > notes.txt
+   17  yum -y install ansible
+   18  ansible-galaxy install -r requirements.yml 
+   19  vi sonar.properties 
+   20  ls
+   21  vi sonar.yml 
+   22  vi /etc/ansible/roles/lrk.sonarqube/defaults/main.yml 
+   23  vi sonar.yml 
+   24  ls
+   25  cat notes.txt 
+   26  ansible-playbook sonar.yml
+   27  ls
+   28  sudo su - postgres
+   29  vi sonar.properties 
+   30  cp sonar.properties /opt/sonarqube/sonarqube-6.7.4/conf/sonar.properties 
+   31  systemctl daemon-reload sonar
+   32  systemctl daemon-reload 
+   33  systemctl start sonar
+   34  netstat -plntu
+   35  history
+
+
+# init database
+sudo su - postgres
+psql
+
+CREATE USER sonar WITH PASSWORD 'sonar$321';
+CREATE DATABASE sonardb;
+GRANT ALL PRIVILEGES ON DATABASE sonardb to sonar;
+\q
+
+
+
+cp sonar.properties /opt/sonarqube/sonarqube-6.7.4/conf/sonar.properties
+
+
+
+Welcome to SonarQube!
+Skip this tutorial
+
+Find it back anytime in the Help section
+Want to quickly analyze a first project? Follow these 2 easy steps.
+
+> cems
+
+Provide a token
+cems: somethingsomethingsomething
+The token is used to identify you when an analysis is performed. If it has been compromised, you can revoke it at any point of time in your user account.
+
+> Java
+> Maven
+
+####
+Change Admin Password
+####
+
+
