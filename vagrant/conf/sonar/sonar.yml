@@ -1,4 +1,4 @@
-- hosts: sonar
+- hosts: 127.0.0.1
   vars:
     java_packages:
       - java-1.8.0-openjdk
@@ -12,3 +12,4 @@
   roles:
     - geerlingguy.java
     - lrk.sonarqube
+    - anxs.postgresql

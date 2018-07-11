@@ -1,0 +1,27 @@
+    1  netstat -plntu
+    2  systemctl enable sonar
+    3  yum install epel
+    4  yum install epel-release
+    5  yum install ansible
+    6  yum install git
+    7  cd /opt
+    8  mkdir gits
+    9  cd gits
+   10  git clone https://github.com/cyberxml/vagrant-sonar
+   11  cd vagrant-sonar/
+   12  ls
+   13  cd vagrant/
+   14  ls
+   15  cd conf/
+   16  ls
+   17  cd sonar/
+   18  ls
+   19  ansible-galaxy -r requirements.yml 
+   20  ansible-galaxy import requirements.yml 
+   21  ansible-galaxy install requirements.yml 
+   22  ansible-galaxy install -r requirements.yml 
+   23  ansible-playbook sonar.yml 
+   24  vi sonar.yml 
+   25  ansible-playbook sonar.yml 
+   26  netstat -plntu
+   27  history > notes.txt
