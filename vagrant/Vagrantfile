@@ -4,7 +4,7 @@ Vagrant.configure("2") do |config|
     sonar.vm.box = "cyberxml/c7vb52"
     sonar.vm.hostname = "sonar"
     config.vm.provider :virtualbox do |vb|
-        vb.customize [ "modifyvm", :id, "--memory", "2048" ]
+        vb.customize [ "modifyvm", :id, "--memory", "4096" ]
     end
     sonar.vm.network "forwarded_port", guest: 9000, host: 9000
     sonar.vm.synced_folder ".", "/vagrant", type: "virtualbox"
