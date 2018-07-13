@@ -1,72 +1,89 @@
-    1  cd /opt/gits
-    2  mkdir /opt/gits
-    3  yum -y install gits
-    4  cd /opt/gits/
-    5  ls
-    6  git clone https://github.com/cyberxml/vagrant-sonar
-    7  yum -y install git
-    8  git clone https://github.com/cyberxml/vagrant-sonar
-    9  cd vagrant-sonar/
-   10  ls
-   11  cd vagrant/
-   12  ls
-   13  cd conf/
-   14  ls
-   15  cd sonar/
-   16  ls
-   17  yum -y install ansible
-   18  ansible-galaxy install -r requirements.yml 
-   19  vi sonar.properties 
-   20  ls
-   21  vi sonar.yml 
-   22  vi /etc/ansible/roles/lrk.sonarqube/defaults/main.yml 
-   23  vi sonar.yml 
-   24  ls
-   25  cat notes.txt 
-   26  ansible-playbook sonar.yml
-   27  ls
-   28  sudo su - postgres
-   29  vi sonar.properties 
-   30  cp sonar.properties /opt/sonarqube/sonarqube-6.7.4/conf/sonar.properties 
-   31  systemctl daemon-reload sonar
-   32  systemctl daemon-reload 
-   33  systemctl start sonar
-   34  netstat -plntu
-   35  history
+SonarQube is a FOSS product that allows developers and system admins to run their own static code analysis. All such tools require manual review of findings to filter out false positives.
+
+Note that SonarQube should not be run under root account.
 
 
-# init database
-sudo su - postgres
-psql
-
-CREATE USER sonar WITH PASSWORD 'sonar$321';
-CREATE DATABASE sonardb;
-GRANT ALL PRIVILEGES ON DATABASE sonardb to sonar;
-\q
+There are multiple ways to install. Choose one.
+Install with Ansible on CentOS 7
 
 
+    Prerequisites
+        yum -y update
+        yum -y install epel-release
+        yum -y install wget
+        yum -y install ansible
+    Ansible Install of SonarQube
+        mkdir /opt/gits
+        cd /opt/gits
+        git clone https://github.com/cyberxml/vagrant-sonar
+        cd /opt/gits/vagrant-sonar/vagrant/conf/sonar
+        ansible-playbook sonar.yml
+        cp sonar.properties /opt/sonarqube/sonarqube-6.7.4/conf/sonar.properties
+    Database Config
+        su psql
+            psql
+                CREATE USER sonar WITH PASSWORD 'sonar1234';
+                CREATE DATABASE sonardb;
+                GRANT ALL PRIVILEGES ON DATABASE sonardb to sonar;
+                \q
+            exit
+    Restart the service
+        systemctl stop sonar
+        systemctl daemon-reload
+        systemctl start sonar
+        netstat -plntu # verify 5444 and 9001
 
-cp sonar.properties /opt/sonarqube/sonarqube-6.7.4/conf/sonar.properties
+Install with Ansible on (stig'd) Red Hat 7
+
+    Prerequisites
+        yum -y update
+        yum -y install wget
+        wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+        rpm -ivh epel-release-latest-7.noarch.rpm
+        rpm --import https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG
+        yum -y update
+        yum -y install ansible
+    Ansible Install of SonarQube
+        mkdir /opt/gits
+        cd /opt/gits
+        git clone https://github.com/cyberxml/vagrant-sonar
+        cd /opt/gits/vagrant-sonar/vagrant/conf/sonar
+        ansible-playbook sonar.yml
+        review sonar.properties and configure for your environment
+            cp sonar.properties /opt/sonarqube/sonarqube-6.7.4/conf/sonar.properties
+    Database Config
+        su psql
+            psql
+                CREATE USER sonar WITH PASSWORD 'sonar$321';
+                CREATE DATABASE sonardb;
+                GRANT ALL PRIVILEGES ON DATABASE sonardb to sonar;
+                \q
+            exit
+    Restart the service
+        systemctl stop sonar
+        systemctl daemon-reload
+        systemctl start sonar
+        netstat -plntu # verify 8080 and 9001
 
 
+Install with Ansible on Vagrant VM
 
-Welcome to SonarQube!
-Skip this tutorial
+Ideally, this would be done with provisioning, but the proxy environment is making it more difficult
 
-Find it back anytime in the Help section
-Want to quickly analyze a first project? Follow these 2 easy steps.
-
-> cems
-
-Provide a token
-cems: somethingsomethingsomething
-The token is used to identify you when an analysis is performed. If it has been compromised, you can revoke it at any point of time in your user account.
-
-> Java
-> Maven
-
-####
-Change Admin Password
-####
-
-
+    Ansible Install
+        https_proxy=${http_proxy} http_proxy=${http_proxy} ansible-playbook -i ./.vagrant/machines/sonar/virtualbox/private_key -u vagrant conf/sonar/sonar.yml
+        review sonar.properties and configure for your environment
+            cp sonar.properties /opt/sonarqube/sonarqube-6.7.4/conf/sonar.properties
+    Database Config
+        su psql
+            psql
+                CREATE USER sonar WITH PASSWORD 'sonar$321';
+                CREATE DATABASE sonardb;
+                GRANT ALL PRIVILEGES ON DATABASE sonardb to sonar;
+                \q
+            exit
+    Service Restart
+        systemctl stop sonar
+        systemctl daemon-reload
+        systemctl start sonar
+        netstat -plntu # verify 8080 and 9001
